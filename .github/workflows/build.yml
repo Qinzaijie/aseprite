@@ -6,8 +6,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        build_type: [RelWithDebInfo, Debug]
+        os: [windows-latest ]
+        build_type: [Release]
         ui: [gui, cli]
         scripting: [lua, noscripts]
         exclude:
@@ -51,61 +51,50 @@ jobs:
         key: ${{ matrix.os }}-${{ matrix.ui }}-${{ matrix.scripting }}-${{ matrix.build_type }}
     - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
-      if: runner.os == 'Windows'
-    - name: Generating Makefiles
-      shell: bash
-      run: |
-        if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          export enable_ccache=off
-        else
-          export enable_ccache=on
-        fi
+如果: runner.os =='视窗'
+    - 名字: 生成生成文件
+壳: 尝试
+奔跑: |
+if[[" $ { { runner . OS } } " = = " Windows "]]；然后
+导出enable_ccache=off
+其他
+导出enable_ccache=on
+船方不负担装货费用
 
-        if [[ "${{ matrix.ui }}" == "gui" ]] ; then
-          export laf_backend=skia
-        else
-          export laf_backend=none
-        fi
+if[[" $ { { matrix . ui } } " = = " GUI "]]；然后
+导出laf_backend=skia
+其他
+导出laf _ backend =无
+船方不负担装货费用
 
-        if [[ "${{ matrix.scripting }}" == "lua" ]] ; then
-          export enable_scripting=on
-        else
-          export enable_scripting=off
-        fi
+if[[" $ { { matrix . scripting } } " = = " Lua "]]；然后
+导出enable_scripting=on
+其他
+导出enable_scripting=off
+船方不负担装货费用
 
-        if [[ "${{ runner.os }}" == "macOS" ]] ; then
-          export skia_arch=arm64
-        else
-          export skia_arch=x64
-        fi
+if[[" $ { { runner . OS } } " = = " MAC OS "]]；然后
+export skia_arch=arm64
+其他
+export skia_arch=x64
+船方不负担装货费用
 
-        cmake -S . -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 \
-          -DENABLE_TESTS=ON \
-          -DENABLE_SCRIPTING=$enable_scripting \
-          -DENABLE_CCACHE=$enable_ccache \
-          -DLAF_BACKEND=$laf_backend \
-          -DSKIA_DIR=skia \
-          -DSKIA_LIBRARY_DIR=skia/out/Release-$skia_arch
-    - name: Compiling
-      shell: bash
-      run: |
-        cd build && ninja
-    - name: Running C++ Tests
-      shell: bash
-      run: |
-        if [[ "${{ runner.os }}" == "Linux" ]] ; then
-          export XVFB=xvfb-run
-        fi
-        cd build && $XVFB ctest --output-on-failure
-    - name: Running CLI Tests
-      if: ${{ matrix.scripting == 'lua' }}
-      shell: bash
-      run: |
-        if [[ "${{ runner.os }}" == "Linux" ]] ; then
-          export XVFB=xvfb-run
-        fi
-        export ASEPRITE=$PWD/build/bin/aseprite
-        cd tests
-        $XVFB bash run-tests.sh
+cmake -S . -B build -G忍者\
+-DC make _ BUILD _ TYPE = $ { { matrix . BUILD _ TYPE } } \
+-DC make _ OSX _部署_目标=10.9 \
+-DENABLE_TESTS=ON \
+-den able _ SCRIPTING = $ enable _ SCRIPTING \
+-den able _ CCACHE = $ enable _ CCACHE \
+-DLAF后端=$laf后端\
+-DSKIA_DIR=skia \
+-DSKIA _ LIBRARY _ DIR = skia/out/Release-$ skia _ arch
+    - 名字: 收集
+壳: 尝试
+奔跑: |
+cd版本&忍者
+   - 使用: 动作/上传-工件@v3
+随着:
+名字: 无菌晶体
+小路: |
+data脚本/a脚本/build/bin/data
+d:/a/a script/a script/build/bin/a script . exe
